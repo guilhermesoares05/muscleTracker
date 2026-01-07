@@ -1,11 +1,28 @@
-import { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { UserData } from '@/models/types';
-import ProgressCard from './ProgressCard';
-import EvolutionHistory from './EvolutionHistory';
-import EvolutionChart from './EvolutionChart';
-import WeeklyEvolutionForm from './WeeklyEvolutionForm';
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
+import { UserData } from "@/models/types";
+import ProgressCard from "./ProgressCard";
+import EvolutionHistory from "./EvolutionHistory";
+import EvolutionChart from "./EvolutionChart";
+import WeeklyEvolutionForm from "./WeeklyEvolutionForm";
+import { FileText, Menu, PlusCircle } from "lucide-react";
 
 interface DashboardProps {
   userData: UserData;
@@ -31,80 +48,165 @@ export default function Dashboard({
     setShowForm(false);
   };
 
+  const imc = (
+    userData.profile.weight /
+    (userData.profile.height / 100) ** 2
+  ).toFixed(1);
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4 space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold text-foreground" style={{ fontFamily: 'Poppins' }}>
-            Muscle Tracker
-          </h1>
-          <p className="text-muted-foreground">
-            Bem-vindo, <span className="font-semibold text-foreground">{userData.profile.name}</span>
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="p-6 border-l-4 border-l-primary">
-            <h3 className="text-sm font-medium text-muted-foreground mb-4">Dados Pessoais</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Idade:</span>
-                <span className="font-semibold text-foreground">{userData.profile.age} anos</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Peso:</span>
-                <span className="font-semibold text-foreground">{userData.profile.weight} kg</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Altura:</span>
-                <span className="font-semibold text-foreground">{userData.profile.height} cm</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">IMC:</span>
-                <span className="font-semibold text-foreground">
-                  {(userData.profile.weight / ((userData.profile.height / 100) ** 2)).toFixed(1)}
-                </span>
-              </div>
+    <div className="min-h-screen w-full bg-muted/40">
+      <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
+        <div className="hidden border-r bg-background lg:block">
+          <div className="flex h-full max-h-screen flex-col gap-2">
+            <div className="flex h-[60px] items-center border-b px-6">
+              <h1 className="text-2xl font-bold text-foreground">
+                Muscle Tracker
+              </h1>
             </div>
-          </Card>
-
-          <ProgressCard
-            currentWeek={currentWeek}
-            progressPercentage={progressPercentage}
-            isCompleted={isCompleted}
-          />
-        </div>
-
-        {showForm ? (
-          <WeeklyEvolutionForm
-            week={currentWeek}
-            onSubmit={handleFormSubmit}
-            onCancel={() => setShowForm(false)}
-          />
-        ) : (
-          <div className="flex gap-3">
-            {!isCompleted && (
-              <Button
-                onClick={() => setShowForm(true)}
-                className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-6"
-              >
-                Registrar Evolução Semana {currentWeek}
-              </Button>
-            )}
-            {isCompleted && (
-              <Button
-                onClick={onGenerateCertificate}
-                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6"
-              >
-                📜 Baixar Certificado
-              </Button>
-            )}
+            <div className="flex-1 overflow-auto py-2">
+              <nav className="grid items-start px-4 text-sm font-medium">
+                {!isCompleted && (
+                  <Button
+                    onClick={() => setShowForm(true)}
+                    variant={showForm ? "secondary" : "ghost"}
+                    className="justify-start gap-2"
+                  >
+                    <PlusCircle className="h-4 w-4" />
+                    Registrar Evolução
+                  </Button>
+                )}
+                {isCompleted && (
+                  <Button
+                    onClick={onGenerateCertificate}
+                    variant="ghost"
+                    className="justify-start gap-2"
+                  >
+                    <FileText className="h-4 w-4" />
+                    Baixar Certificado
+                  </Button>
+                )}
+              </nav>
+            </div>
           </div>
-        )}
+        </div>
+        <div className="flex flex-col">
+          <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-background px-6">
+            <div className="lg:hidden">
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button size="icon" variant="outline">
+                    <Menu className="h-6 w-6" />
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <DrawerHeader>
+                    <DrawerTitle>Menu</DrawerTitle>
+                    <DrawerDescription>
+                      Selecione uma ação
+                    </DrawerDescription>
+                  </DrawerHeader>
+                  <nav className="grid items-start px-4 text-sm font-medium">
+                    {!isCompleted && (
+                      <DrawerClose asChild>
+                        <Button
+                          onClick={() => setShowForm(true)}
+                          variant={showForm ? "secondary" : "ghost"}
+                          className="justify-start gap-2"
+                        >
+                          <PlusCircle className="h-4 w-4" />
+                          Registrar Evolução
+                        </Button>
+                      </DrawerClose>
+                    )}
+                    {isCompleted && (
+                      <DrawerClose asChild>
+                        <Button
+                          onClick={onGenerateCertificate}
+                          variant="ghost"
+                          className="justify-start gap-2"
+                        >
+                          <FileText className="h-4 w-4" />
+                          Baixar Certificado
+                        </Button>
+                      </DrawerClose>
+                    )}
+                  </nav>
+                  <DrawerFooter>
+                    <DrawerClose asChild>
+                      <Button variant="outline">Cancelar</Button>
+                    </DrawerClose>
+                  </DrawerFooter>
+                </DrawerContent>
+              </Drawer>
+            </div>
+            <div className="flex-1">
+              <p className="text-muted-foreground text-sm sm:text-base">
+                Bem-vindo,{" "}
+                <span className="font-semibold text-foreground">
+                  {userData.profile.name}
+                </span>
+              </p>
+            </div>
+          </header>
+          <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8">
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Dados Pessoais</CardTitle>
+                    <CardDescription>
+                      Suas informações corporais atuais.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Idade:</span>
+                      <span className="font-semibold text-foreground">
+                        {userData.profile.age} anos
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Peso:</span>
+                      <span className="font-semibold text-foreground">
+                        {userData.profile.weight} kg
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Altura:</span>
+                      <span className="font-semibold text-foreground">
+                        {userData.profile.height} cm
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">IMC:</span>
+                      <span className="font-semibold text-foreground">
+                        {imc}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+                <ProgressCard
+                  currentWeek={currentWeek}
+                  progressPercentage={progressPercentage}
+                  isCompleted={isCompleted}
+                />
+              </div>
 
-        {userData.evolutions.length > 0 && <EvolutionChart evolutions={userData.evolutions} />}
+              {showForm && (
+                <WeeklyEvolutionForm
+                  week={currentWeek}
+                  onSubmit={handleFormSubmit}
+                  onCancel={() => setShowForm(false)}
+                />
+              )}
 
-        <EvolutionHistory evolutions={userData.evolutions} />
+              {userData.evolutions.length > 0 && (
+                <EvolutionChart evolutions={userData.evolutions} />
+              )}
+              <EvolutionHistory evolutions={userData.evolutions} />
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );

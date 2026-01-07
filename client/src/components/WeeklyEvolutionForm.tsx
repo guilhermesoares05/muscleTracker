@@ -1,9 +1,40 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
-import { Measurements } from '@/models/types';
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Measurements } from "@/models/types";
+
+const positiveNumberSchema = z.coerce
+  .number()
+  .positive({ message: "Deve ser maior que 0." });
+
+const formSchema = z.object({
+  chest: positiveNumberSchema,
+  biceps: positiveNumberSchema,
+  waist: positiveNumberSchema,
+  hip: positiveNumberSchema,
+  thigh: positiveNumberSchema,
+});
 
 interface WeeklyEvolutionFormProps {
   week: number;
@@ -11,107 +42,77 @@ interface WeeklyEvolutionFormProps {
   onCancel?: () => void;
 }
 
-export default function WeeklyEvolutionForm({ week, onSubmit, onCancel }: WeeklyEvolutionFormProps) {
-  const [measurements, setMeasurements] = useState<Measurements>({
-    chest: 0,
-    biceps: 0,
-    waist: 0,
-    hip: 0,
-    thigh: 0,
+export default function WeeklyEvolutionForm({
+  week,
+  onSubmit,
+  onCancel,
+}: WeeklyEvolutionFormProps) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      chest: undefined,
+      biceps: undefined,
+      waist: undefined,
+      hip: undefined,
+      thigh: undefined,
+    },
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setMeasurements(prev => ({
-      ...prev,
-      [name]: parseFloat(value) || 0,
-    }));
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-    const fields = ['chest', 'biceps', 'waist', 'hip', 'thigh'] as const;
-
-    fields.forEach(field => {
-      if (measurements[field] <= 0) {
-        newErrors[field] = 'Medida deve ser maior que 0';
-      }
-    });
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validateForm()) {
-      onSubmit(measurements);
-    }
-  };
+  function handleSubmit(values: z.infer<typeof formSchema>) {
+    onSubmit(values);
+  }
 
   const measurementFields = [
-    { key: 'chest' as const, label: 'Peito (cm)', placeholder: 'Ex: 100' },
-    { key: 'biceps' as const, label: 'Bíceps (cm)', placeholder: 'Ex: 35' },
-    { key: 'waist' as const, label: 'Cintura (cm)', placeholder: 'Ex: 85' },
-    { key: 'hip' as const, label: 'Quadril (cm)', placeholder: 'Ex: 95' },
-    { key: 'thigh' as const, label: 'Coxa (cm)', placeholder: 'Ex: 55' },
+    { name: "chest" as const, label: "Peito (cm)", placeholder: "Ex: 100" },
+    { name: "biceps" as const, label: "Bíceps (cm)", placeholder: "Ex: 35" },
+    { name: "waist" as const, label: "Cintura (cm)", placeholder: "Ex: 85" },
+    { name: "hip" as const, label: "Quadril (cm)", placeholder: "Ex: 95" },
+    { name: "thigh" as const, label: "Coxa (cm)", placeholder: "Ex: 55" },
   ];
 
   return (
-    <Card className="w-full max-w-md mx-auto p-6 border-l-4 border-l-accent">
-      <h2 className="text-2xl font-bold text-foreground mb-2" style={{ fontFamily: 'Poppins' }}>
-        Semana {week}
-      </h2>
-      <p className="text-muted-foreground text-sm mb-6">
-        Registre suas medidas desta semana
-      </p>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {measurementFields.map(field => (
-          <div key={field.key}>
-            <Label htmlFor={field.key} className="text-sm font-medium text-foreground">
-              {field.label}
-            </Label>
-            <Input
-              id={field.key}
-              name={field.key}
-              type="number"
-              step="0.1"
-              value={measurements[field.key] || ''}
-              onChange={handleChange}
-              placeholder={field.placeholder}
-              className="mt-1"
-            />
-            {errors[field.key] && (
-              <p className="text-destructive text-sm mt-1">{errors[field.key]}</p>
+    <Card>
+      <CardHeader>
+        <CardTitle>Semana {week}</CardTitle>
+        <CardDescription>Registre suas medidas desta semana</CardDescription>
+      </CardHeader>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {measurementFields.map(({ name, label, placeholder }) => (
+              <FormField
+                key={name}
+                control={form.control}
+                name={name}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{label}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        placeholder={placeholder}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+          </CardContent>
+          <CardFooter className="flex justify-end gap-3">
+            {onCancel && (
+              <Button type="button" variant="outline" onClick={onCancel}>
+                Cancelar
+              </Button>
             )}
-          </div>
-        ))}
-
-        <div className="flex gap-3 mt-6">
-          <Button
-            type="submit"
-            className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
-          >
-            Registrar Evolução
-          </Button>
-          {onCancel && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              className="flex-1"
-            >
-              Cancelar
+            <Button type="submit">
+              Registrar Evolução
             </Button>
-          )}
-        </div>
-      </form>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   );
 }
