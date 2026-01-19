@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import {
   Card,
   CardContent,
@@ -42,6 +43,7 @@ export default function Dashboard({
   onGenerateCertificate,
 }: DashboardProps) {
   const [showForm, setShowForm] = useState(false);
+  const [, setLocation] = useLocation();
 
   const handleFormSubmit = (measurements: any) => {
     onAddEvolution(measurements);
@@ -66,14 +68,16 @@ export default function Dashboard({
             <div className="flex-1 overflow-auto py-2">
               <nav className="grid items-start px-4 text-sm font-medium">
                 {!isCompleted && (
-                  <Button
-                    onClick={() => setShowForm(true)}
-                    variant={showForm ? "secondary" : "ghost"}
-                    className="justify-start gap-2"
-                  >
-                    <PlusCircle className="h-4 w-4" />
-                    Registrar Evolução
-                  </Button>
+                  <>
+                    <Button
+                      onClick={() => setShowForm(true)}
+                      variant={showForm ? "secondary" : "ghost"}
+                      className="justify-start gap-2"
+                    >
+                      <PlusCircle className="h-4 w-4" />
+                      Registrar Evolução
+                    </Button>
+                  </>
                 )}
                 {isCompleted && (
                   <Button
