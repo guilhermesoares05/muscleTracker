@@ -36,7 +36,7 @@ const AvatarViewer: React.FC<AvatarViewerProps> = ({ measurements }) => {
       </Canvas>
 
       <div className="absolute bottom-4 right-4 bg-white/80 dark:bg-black/80 p-2 rounded text-xs">
-         <p>Rotate to view from different angles</p>
+         <p>Gire para visualizar de diferentes ângulos</p>
       </div>
     </div>
   );

@@ -16,18 +16,18 @@ interface AvatarInputProps {
 
 const AvatarInput: React.FC<AvatarInputProps> = ({ measurements, onChange }) => {
   const measurementConfigs = [
-    { key: 'chest', label: 'Chest (cm)', min: 60, max: 150 },
-    { key: 'waist', label: 'Waist (cm)', min: 50, max: 150 },
-    { key: 'hips', label: 'Hips (cm)', min: 60, max: 160 },
-    { key: 'biceps', label: 'Biceps (cm)', min: 20, max: 60 },
-    { key: 'thighs', label: 'Thighs (cm)', min: 30, max: 90 },
+    { key: 'chest', label: 'Peitoral (cm)', min: 60, max: 150 },
+    { key: 'waist', label: 'Cintura (cm)', min: 50, max: 150 },
+    { key: 'hips', label: 'Quadril (cm)', min: 60, max: 160 },
+    { key: 'biceps', label: 'Bíceps (cm)', min: 20, max: 60 },
+    { key: 'thighs', label: 'Coxas (cm)', min: 30, max: 90 },
   ];
 
   return (
     <div className="space-y-6 p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-      <h2 className="text-xl font-semibold mb-4">Body Measurements</h2>
+      <h2 className="text-xl font-semibold mb-4">Medidas Corporais</h2>
       <p className="text-sm text-muted-foreground mb-6">
-        Enter your measurements below to update your avatar.
+        Insira suas medidas abaixo para atualizar seu avatar.
       </p>
 
       {measurementConfigs.map((config) => (

@@ -53,9 +53,6 @@ const BodyModel: React.FC<BodyModelProps> = ({ measurements }) => {
       <group position={[0, 2.2, 0]}>
         {/* Chest area */}
         <mesh position={[0, 0.6, 0]} scale={[scale.chest, 1, scale.chest * 0.8]}>
-            <boxGeometry args={[0.9, 0.9, 0.5]} />
-             {/* Using box with bevels or just primitives for simplicity.
-                 Cylinders might look better for organic shapes but box implies "chest block" */}
              {/* Let's try to make it slightly more organic with a Cylinder for the main torso */}
              <cylinderGeometry args={[0.45, 0.4, 1.2, 32]} />
             <meshStandardMaterial color={color} />

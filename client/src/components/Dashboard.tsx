@@ -23,7 +23,7 @@ import ProgressCard from "./ProgressCard";
 import EvolutionHistory from "./EvolutionHistory";
 import EvolutionChart from "./EvolutionChart";
 import WeeklyEvolutionForm from "./WeeklyEvolutionForm";
-import { FileText, Menu, PlusCircle } from "lucide-react";
+import { FileText, Menu, PlusCircle, User } from "lucide-react";
 
 interface DashboardProps {
   userData: UserData;
@@ -79,6 +79,14 @@ export default function Dashboard({
                     </Button>
                   </>
                 )}
+                <Button
+                  onClick={() => setLocation("/avatar")}
+                  variant="ghost"
+                  className="justify-start gap-2"
+                >
+                  <User className="h-4 w-4" />
+                  Visualizar Avatar 3D
+                </Button>
                 {isCompleted && (
                   <Button
                     onClick={onGenerateCertificate}
@@ -122,6 +130,16 @@ export default function Dashboard({
                         </Button>
                       </DrawerClose>
                     )}
+                    <DrawerClose asChild>
+                      <Button
+                        onClick={() => setLocation("/avatar")}
+                        variant="ghost"
+                        className="justify-start gap-2"
+                      >
+                        <User className="h-4 w-4" />
+                        Visualizar Avatar 3D
+                      </Button>
+                    </DrawerClose>
                     {isCompleted && (
                       <DrawerClose asChild>
                         <Button

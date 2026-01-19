@@ -51,6 +51,10 @@ const MyComponent = () => {
 };
 ```
 
+## Localization
+
+The module is currently localized in Portuguese (pt-BR).
+
 ## Features
 
 -   **Dynamic Scaling**: The avatar updates in real-time as measurements change.
