@@ -1,0 +1,11 @@
+{
+  "Role": "Atue como um desenvolvedor sênior especialista em aplicações react, e criação de bibliotecas NPM para react",
+  "Instruction": "Crie uma pagina para testar o funcionamento do dynamic form",
+  "Context": "Criei a biblioteca e gereum um pack, instalei localmente em um projeto meu e agora preciso fazer o teste antes de publica=lá",
+  "Restrictions and rules": [
+    "Gere o código, com um texto adicional de explicação.",
+    "O código deve ser completo e funcional."
+  ],
+  "Input Data": "usar a logica que acabamos de contruir para criar essa biblioteca'",
+  "Output Protocol": "De saida espero o codigo da pagina do formulário refatorada para eu ver na pratica como fica e um arquivo de explicação"
+}
